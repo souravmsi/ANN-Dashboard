@@ -14,11 +14,13 @@ import shap  # SHAP for feature importance
 import tensorflow.keras.backend as K
 import streamlit as st
 
+dataset_url = "https://raw.githubusercontent.com/souravmsi/dataset-ann/refs/heads/main/dataset.csv"
+
 # Set Streamlit Page Configuration
 st.set_page_config(page_title="ANN CLTV Prediction", layout="wide")
 
 # Load dataset
-df = pd.read_csv("dataset.csv")
+df = pd.read_csv(dataset_url)
 df.drop(columns=['Customer_ID'], inplace=True)
 label_encoder = LabelEncoder()
 df['Gender'] = label_encoder.fit_transform(df['Gender'])
@@ -44,7 +46,7 @@ st.title("📊 ANN Model Dashboard - CLTV Prediction")
 st.sidebar.header("🔧 Model Hyperparameters")
 
 # Hyperparameters from user input:
-epochs = st.sidebar.slider("Epochs", 5, 50, 20)  # range: 5 to 50, default: 20
+epochs = st.sidebar.slider("Epochs", 1, 50)  # range: 5 to 50, default: 20
 learning_rate = st.sidebar.selectbox("Learning Rate", [0.01, 0.001, 0.0001], index=1)
 activation_function = st.sidebar.selectbox("Activation Function", ["relu", "sigmoid", "tanh", "softmax"])
 optimizer_choice = st.sidebar.selectbox("Optimizer", ["adam", "sgd", "rmsprop"])
@@ -152,7 +154,7 @@ if st.button("🚀 Train Model"):
         def plot_shap_feature_importance(model, X_train):
             st.subheader("🔍 Feature Importance")
             # Load original feature names (excluding dropped columns)
-            feature_names = np.array(pd.read_csv('dataset.csv').drop(columns=['Customer_ID', 'Customer_Lifetime_Value']).columns)
+            feature_names = np.array(pd.read_csv(dataset_url).drop(columns=['Customer_ID', 'Customer_Lifetime_Value']).columns)
             # Use a smaller sample for SHAP calculations (for speed)
             sample_X = X_train[:100]
             explainer = shap.Explainer(model, sample_X)

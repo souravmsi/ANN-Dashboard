@@ -20,6 +20,7 @@ dataset_url = "https://raw.githubusercontent.com/souravmsi/dataset-ann/refs/head
 st.set_page_config(page_title="ANN CLTV Prediction", layout="wide")
 
 # Load dataset
+original_dataset = pd.read_csv(dataset_url);
 df = pd.read_csv(dataset_url)
 df.drop(columns=['Customer_ID'], inplace=True)
 label_encoder = LabelEncoder()
@@ -171,6 +172,15 @@ if st.button("🚀 Train Model"):
             })
             st.dataframe(importance_df)
         plot_shap_feature_importance(model, X_train)
+
+
+
+# Display the dataset and descriptive statistics below the training button.
+st.subheader("📋 Sample Dataset")
+st.dataframe(original_dataset.head(100))
+
+st.subheader("📊 Descriptive Statistics")
+st.write(original_dataset.describe())
 
 # Footer with GitHub Follow Button
 footer = """
